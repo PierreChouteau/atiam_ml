@@ -6,9 +6,9 @@ from sklearn.mixture import GaussianMixture
 import torch.distributions as distribution
 from matplotlib.patches import Ellipse
 
-def hdr_plot_style():
+def hdr_plot_style(font_size=18, legend_font_size=16):
     plt.style.use('dark_background')
-    mpl.rcParams.update({'font.size': 18, 'lines.linewidth': 3, 'lines.markersize': 15})
+    mpl.rcParams.update({'font.size': font_size, 'lines.linewidth': 3, 'lines.markersize': 15})
     # avoid type 3 (i.e. bitmap) fonts in figures
     mpl.rcParams['ps.useafm'] = True
     mpl.rcParams['pdf.use14corefonts'] = True
@@ -20,7 +20,7 @@ def hdr_plot_style():
     colors = mpl.cycler('color', ['#3388BB', '#EE6666', '#9988DD', '#EECC55', '#88BB44', '#FFBBBB'])
     #plt.rc('figure', facecolor='#00000000', edgecolor='black')
     #plt.rc('axes', facecolor='#FFFFFF88', edgecolor='white', axisbelow=True, grid=True, prop_cycle=colors)
-    plt.rc('legend', facecolor='#666666EE', edgecolor='white', fontsize=16)
+    plt.rc('legend', facecolor='#666666EE', edgecolor='white', fontsize=legend_font_size)
     plt.rc('grid', color='white', linestyle='solid')
     plt.rc('text', color='white')
     plt.rc('xtick', direction='out', color='white')
@@ -93,10 +93,10 @@ def plot_boundary(W,iVal,style,fig):
     xLims = plt.gca().get_xlim()
     for i in range(nUnits):
         if len(style) == 1:
-            color = [1, 1, 1];
+            color = [1, 1, 1]
         else:
             color = colors[int((3 * iVal + 9) % len(colors))]
-        plt.plot(xLims,(-np.dot(W[i, 1], xLims) - W[i, 0]) / W[i, 2], linestyle=style, color=color, linewidth=1.5);
+        plt.plot(xLims,(-np.dot(W[i, 1], xLims) - W[i, 0]) / W[i, 2], linestyle=style, color=color, linewidth=1.5)
         fig.canvas.draw()
         
 def visualize_boundary_linear(X, y, model):
@@ -175,7 +175,7 @@ def plot_svc_decision_function(model, ax=None, plot_support=True):
     if plot_support:
         ax.scatter(model.support_vectors_[:, 0],
                    model.support_vectors_[:, 1],
-                   s=300, linewidth=2, edgecolor='w', facecolors='none');
+                   s=300, linewidth=2, edgecolor='w', facecolors='none')
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
     
@@ -240,7 +240,7 @@ def plot_gaussian_ellipsoid(m, C, sdwidth=1, npts=None, axh=None, color='r'):
     elif (m.size == 3):
         h = show3d(m[:], C, sdwidth, npts, axh, color)
     else:
-        raise Exception('Unsupported dimensionality');
+        raise Exception('Unsupported dimensionality')
     return h
 
 #-----------------------------
@@ -249,8 +249,8 @@ def show2d(means, C, sdwidth, npts=None, axh=None, color='r'):
         npts = 50
     # plot the gaussian fits
     tt = np.linspace(0, 2 * np.pi, npts).transpose()
-    x = np.cos(tt);
-    y = np.sin(tt);
+    x = np.cos(tt)
+    y = np.sin(tt)
     ap = np.vstack((x[:], y[:])).transpose()
     v, d = np.linalg.eigvals(C)
     d = sdwidth / np.sqrt(d) # convert variance to sdwidth*sd
@@ -262,7 +262,7 @@ def show2d(means, C, sdwidth, npts=None, axh=None, color='r'):
 def show3d(means, C, sdwidth, npts=None, axh=None):
     if (npts is None):
         npts = 20
-    x, y, z = sphere(npts);
+    x, y, z = sphere(npts)
     ap = np.concatenate((x[:], y[:], z[:])).transpose()
     v, d = eigvals(C)
     if any(d[:] < 0):
@@ -270,9 +270,9 @@ def show3d(means, C, sdwidth, npts=None, axh=None):
         d = np.max(d, 0)
     d = sdwidth * np.sqrt(d); # convert variance to sdwidth*sd
     bp = (v * d * ap) + repmat(means, 1, size(ap,2)); 
-    xp = reshape(bp[0,:], size(x));
-    yp = reshape(bp[1,:], size(y));
-    zp = reshape(bp[2,:], size(z));
+    xp = reshape(bp[0,:], size(x))
+    yp = reshape(bp[1,:], size(y))
+    zp = reshape(bp[2,:], size(z))
     h = axh.surf(xp, yp, zp);
     return h
 
@@ -289,7 +289,7 @@ def fit_multivariate_gaussian(X_s):
     pos[:, :, 1] = Y
     norm = distribution.MultivariateNormal(torch.Tensor(gmm.means_[0]), torch.Tensor(gmm.covariances_[0]))
     Z = torch.exp(norm.log_prob(torch.Tensor(pos))).numpy()
-    plt.figure(figsize=(10, 8));
+    plt.figure(figsize=(10, 8))
     ax = plt.gca()
     cset = ax.contourf(X, Y, Z, cmap='magma')
     plt.scatter(X_s[:, 0], X_s[:, 1], c='b', s=60, edgecolor='w', zorder=2.5); plt.grid(True);
@@ -310,7 +310,7 @@ def fit_gaussian_mixture(X_s):
     for i in range(4):
         norm = distribution.MultivariateNormal(torch.Tensor(gmm.means_[i]), torch.Tensor(gmm.covariances_[i]))
         Z += torch.exp(norm.log_prob(torch.Tensor(pos))).numpy()
-    plt.figure(figsize=(10, 8));
+    plt.figure(figsize=(10, 8))
     ax = plt.gca()
     cset = ax.contourf(X, Y, Z, cmap='magma')
     plt.scatter(X_s[:, 0], X_s[:, 1], c='b', s=60, edgecolor='w', zorder=2.5); plt.grid(True);
